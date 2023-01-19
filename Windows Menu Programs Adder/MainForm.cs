@@ -8,8 +8,8 @@ namespace Windows_Menu_Programs_Adder;
 public partial class MainForm : Form
 {
     BindingList<WProgram> programs = new BindingList<WProgram>();
-    BindingList<WProgram> startMenuPrograms = new BindingList<WProgram>();
-    BindingList<WProgram> taskBarPrograms = new BindingList<WProgram>();
+    BindingList<WProgram> checkedPrograms = new BindingList<WProgram>();
+    Dictionary<int, string> customeNames = new Dictionary<int, string>();
 
     public MainForm()
     {
@@ -17,7 +17,13 @@ public partial class MainForm : Form
         ((ListBox)ProgramsCheckedListBox).DataSource = programs;
         ((ListBox)ProgramsCheckedListBox).DisplayMember = "Name";
         ((ListBox)ProgramsCheckedListBox).ValueMember = "Path";
+        CheckedProgramsListBox.DataSource = checkedPrograms;
+        CheckedProgramsListBox.DisplayMember = "Name";
+        CheckedProgramsListBox.ValueMember = "Path";
+        ShortcutTextBox.GotFocus += ShortcutTextBox_GotFocus;
+        ShortcutTextBox.LostFocus += ShortcutTextBox_LostFocus;
         MenuComboBox.SelectedIndex = 0;
+        ShortcutTextBoxSetDefaultValue();
         FillPrograms();
     }
 
@@ -151,7 +157,58 @@ public partial class MainForm : Form
 
     private void ProgramsCheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
     {
-        ShortcutLabel.Visible = ProgramsCheckedListBox.CheckedItems.Count == 1;
-        ShortcutTextBox.Visible = ProgramsCheckedListBox.CheckedItems.Count == 1;
+        ShortcutLabel.Visible = !(ProgramsCheckedListBox.CheckedItems.Count <= 1 && e.NewValue == CheckState.Unchecked);
+        ShortcutTextBox.Visible = !(ProgramsCheckedListBox.CheckedItems.Count <= 1 && e.NewValue == CheckState.Unchecked);
+
+        if (e.NewValue == CheckState.Checked)
+            checkedPrograms.Add((WProgram)ProgramsCheckedListBox.Items[e.Index]);
+        else
+            checkedPrograms.Remove((WProgram)ProgramsCheckedListBox.Items[e.Index]);
+    }
+
+    private void ProgramsCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ProgramsCheckedListBox.SelectedIndex = -1;
+    }
+
+    private void CheckedProgramsListBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string name = "";
+        customeNames.TryGetValue(CheckedProgramsListBox.SelectedIndex, out name);
+        ShortcutTextBox.Text = name;
+
+        ShortcutTextBoxSetDefaultValue();
+    }
+
+    private void ShortcutTextBox_TextChanged(object sender, EventArgs e)
+    {
+        customeNames[CheckedProgramsListBox.SelectedIndex] = ShortcutTextBox.Text;
+    }
+
+    private void ShortcutTextBox_GotFocus(object? sender, EventArgs e)
+    {
+        if (ShortcutTextBox.Text == "(Default)")
+        {
+            ShortcutTextBox.ForeColor = Color.Black;
+            ShortcutTextBox.Text = "";
+        }
+    }
+
+    private void ShortcutTextBox_LostFocus(object? sender, EventArgs e)
+    {
+        ShortcutTextBoxSetDefaultValue();
+    }
+
+    void ShortcutTextBoxSetDefaultValue()
+    {
+        if (string.IsNullOrWhiteSpace(ShortcutTextBox.Text))
+        {
+            ShortcutTextBox.ForeColor = Color.Gray;
+            ShortcutTextBox.Text = "(Default)";
+        }
+        else if (ShortcutTextBox.Text == "(Default)")
+            ShortcutTextBox.ForeColor = Color.Gray;
+        else if (ShortcutTextBox.Text != "(Default)")
+            ShortcutTextBox.ForeColor = Color.Black;
     }
 }

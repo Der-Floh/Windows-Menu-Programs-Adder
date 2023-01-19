@@ -28,97 +28,110 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.MenuComboBox = new System.Windows.Forms.ComboBox();
-            this.AddButton = new System.Windows.Forms.Button();
-            this.AllUsersCheckBox = new System.Windows.Forms.CheckBox();
-            this.ProgramsCheckedListBox = new System.Windows.Forms.CheckedListBox();
-            this.ShortcutTextBox = new System.Windows.Forms.TextBox();
-            this.ShortcutLabel = new System.Windows.Forms.Label();
-            this.SuspendLayout();
+            MenuComboBox = new ComboBox();
+            AddButton = new Button();
+            AllUsersCheckBox = new CheckBox();
+            ProgramsCheckedListBox = new CheckedListBox();
+            ShortcutTextBox = new TextBox();
+            ShortcutLabel = new Label();
+            CheckedProgramsListBox = new ListBox();
+            SuspendLayout();
             // 
             // MenuComboBox
             // 
-            this.MenuComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.MenuComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.MenuComboBox.FormattingEnabled = true;
-            this.MenuComboBox.Items.AddRange(new object[] {
-            "Desktop",
-            "Start Menu",
-            "Taskbar"});
-            this.MenuComboBox.Location = new System.Drawing.Point(293, 120);
-            this.MenuComboBox.Name = "MenuComboBox";
-            this.MenuComboBox.Size = new System.Drawing.Size(134, 23);
-            this.MenuComboBox.TabIndex = 2;
-            this.MenuComboBox.SelectedIndexChanged += new System.EventHandler(this.MenuComboBox_SelectedIndexChanged);
+            MenuComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            MenuComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            MenuComboBox.FormattingEnabled = true;
+            MenuComboBox.Items.AddRange(new object[] { "Desktop", "Start Menu", "Taskbar" });
+            MenuComboBox.Location = new Point(293, 24);
+            MenuComboBox.Name = "MenuComboBox";
+            MenuComboBox.Size = new Size(134, 23);
+            MenuComboBox.TabIndex = 2;
+            MenuComboBox.SelectedIndexChanged += MenuComboBox_SelectedIndexChanged;
             // 
             // AddButton
             // 
-            this.AddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.AddButton.Location = new System.Drawing.Point(212, 119);
-            this.AddButton.Name = "AddButton";
-            this.AddButton.Size = new System.Drawing.Size(75, 23);
-            this.AddButton.TabIndex = 3;
-            this.AddButton.Text = "Add to ->";
-            this.AddButton.UseVisualStyleBackColor = true;
-            this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
+            AddButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            AddButton.Location = new Point(212, 23);
+            AddButton.Name = "AddButton";
+            AddButton.Size = new Size(75, 23);
+            AddButton.TabIndex = 3;
+            AddButton.Text = "Add to ->";
+            AddButton.UseVisualStyleBackColor = true;
+            AddButton.Click += AddButton_Click;
             // 
             // AllUsersCheckBox
             // 
-            this.AllUsersCheckBox.AutoSize = true;
-            this.AllUsersCheckBox.Location = new System.Drawing.Point(293, 149);
-            this.AllUsersCheckBox.Name = "AllUsersCheckBox";
-            this.AllUsersCheckBox.Size = new System.Drawing.Size(112, 19);
-            this.AllUsersCheckBox.TabIndex = 4;
-            this.AllUsersCheckBox.Text = "Add for all Users";
-            this.AllUsersCheckBox.UseVisualStyleBackColor = true;
+            AllUsersCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            AllUsersCheckBox.AutoSize = true;
+            AllUsersCheckBox.Location = new Point(293, 53);
+            AllUsersCheckBox.Name = "AllUsersCheckBox";
+            AllUsersCheckBox.Size = new Size(112, 19);
+            AllUsersCheckBox.TabIndex = 4;
+            AllUsersCheckBox.Text = "Add for all Users";
+            AllUsersCheckBox.UseVisualStyleBackColor = true;
             // 
             // ProgramsCheckedListBox
             // 
-            this.ProgramsCheckedListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ProgramsCheckedListBox.CheckOnClick = true;
-            this.ProgramsCheckedListBox.FormattingEnabled = true;
-            this.ProgramsCheckedListBox.Location = new System.Drawing.Point(12, 12);
-            this.ProgramsCheckedListBox.Name = "ProgramsCheckedListBox";
-            this.ProgramsCheckedListBox.Size = new System.Drawing.Size(194, 256);
-            this.ProgramsCheckedListBox.TabIndex = 5;
-            this.ProgramsCheckedListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ProgramsCheckedListBox_ItemCheck);
+            ProgramsCheckedListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ProgramsCheckedListBox.CheckOnClick = true;
+            ProgramsCheckedListBox.FormattingEnabled = true;
+            ProgramsCheckedListBox.Location = new Point(12, 12);
+            ProgramsCheckedListBox.Name = "ProgramsCheckedListBox";
+            ProgramsCheckedListBox.Size = new Size(194, 256);
+            ProgramsCheckedListBox.TabIndex = 5;
+            ProgramsCheckedListBox.ItemCheck += ProgramsCheckedListBox_ItemCheck;
+            ProgramsCheckedListBox.SelectedIndexChanged += ProgramsCheckedListBox_SelectedIndexChanged;
             // 
             // ShortcutTextBox
             // 
-            this.ShortcutTextBox.Location = new System.Drawing.Point(301, 91);
-            this.ShortcutTextBox.Name = "ShortcutTextBox";
-            this.ShortcutTextBox.Size = new System.Drawing.Size(126, 23);
-            this.ShortcutTextBox.TabIndex = 6;
-            this.ShortcutTextBox.Visible = false;
+            ShortcutTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ShortcutTextBox.Location = new Point(301, 100);
+            ShortcutTextBox.Name = "ShortcutTextBox";
+            ShortcutTextBox.Size = new Size(126, 23);
+            ShortcutTextBox.TabIndex = 6;
+            ShortcutTextBox.Visible = false;
+            ShortcutTextBox.TextChanged += ShortcutTextBox_TextChanged;
             // 
             // ShortcutLabel
             // 
-            this.ShortcutLabel.AutoSize = true;
-            this.ShortcutLabel.Location = new System.Drawing.Point(212, 94);
-            this.ShortcutLabel.Name = "ShortcutLabel";
-            this.ShortcutLabel.Size = new System.Drawing.Size(83, 15);
-            this.ShortcutLabel.TabIndex = 7;
-            this.ShortcutLabel.Text = "Shortcut Label";
-            this.ShortcutLabel.Visible = false;
+            ShortcutLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ShortcutLabel.AutoSize = true;
+            ShortcutLabel.Location = new Point(212, 103);
+            ShortcutLabel.Name = "ShortcutLabel";
+            ShortcutLabel.Size = new Size(87, 15);
+            ShortcutLabel.TabIndex = 7;
+            ShortcutLabel.Text = "Shortcut Name";
+            ShortcutLabel.Visible = false;
+            // 
+            // CheckedProgramsListBox
+            // 
+            CheckedProgramsListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            CheckedProgramsListBox.FormattingEnabled = true;
+            CheckedProgramsListBox.ItemHeight = 15;
+            CheckedProgramsListBox.Location = new Point(212, 129);
+            CheckedProgramsListBox.Name = "CheckedProgramsListBox";
+            CheckedProgramsListBox.Size = new Size(215, 139);
+            CheckedProgramsListBox.TabIndex = 8;
+            CheckedProgramsListBox.SelectedIndexChanged += CheckedProgramsListBox_SelectedIndexChanged;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(439, 278);
-            this.Controls.Add(this.ShortcutLabel);
-            this.Controls.Add(this.ShortcutTextBox);
-            this.Controls.Add(this.ProgramsCheckedListBox);
-            this.Controls.Add(this.AllUsersCheckBox);
-            this.Controls.Add(this.AddButton);
-            this.Controls.Add(this.MenuComboBox);
-            this.Name = "MainForm";
-            this.Text = "Windows Menu Programs Adder";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(439, 278);
+            Controls.Add(CheckedProgramsListBox);
+            Controls.Add(ShortcutLabel);
+            Controls.Add(ShortcutTextBox);
+            Controls.Add(ProgramsCheckedListBox);
+            Controls.Add(AllUsersCheckBox);
+            Controls.Add(AddButton);
+            Controls.Add(MenuComboBox);
+            MinimumSize = new Size(455, 317);
+            Name = "MainForm";
+            Text = "Windows Menu Programs Adder";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -128,5 +141,6 @@
         private CheckedListBox ProgramsCheckedListBox;
         private TextBox ShortcutTextBox;
         private Label ShortcutLabel;
+        private ListBox CheckedProgramsListBox;
     }
 }
