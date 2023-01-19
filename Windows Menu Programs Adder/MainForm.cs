@@ -2,6 +2,7 @@ using IWshRuntimeLibrary;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Security.Principal;
 
 namespace Windows_Menu_Programs_Adder;
 
@@ -21,6 +22,10 @@ public partial class MainForm : Form
         CheckedProgramsListBox.DisplayMember = "Name";
         CheckedProgramsListBox.ValueMember = "Path";
         MenuComboBox.SelectedIndex = 0;
+        if (!IsAdministrator())
+            AllUsersCheckBox.Text += " (requires Admin)";
+        else
+            AllUsersCheckBox.Checked = true;
         ShortcutTextBoxSetDefaultValue();
         FillPrograms();
     }
@@ -160,7 +165,7 @@ public partial class MainForm : Form
     {
         switch (MenuComboBox.SelectedIndex)
         {
-            default: AllUsersCheckBox.Visible = false; break; //todo true
+            default: AllUsersCheckBox.Visible = true; break;
             case 2: AllUsersCheckBox.Visible = false; break;
         }
     }
@@ -230,21 +235,40 @@ public partial class MainForm : Form
     private void OpenPathButton_Click(object sender, EventArgs e)
     {
         string path = ((WProgram)CheckedProgramsListBox.SelectedItem).Path;
-        //path = path.Substring(0, path.LastIndexOf('\\'));
-        //OpenFolder(path);
         Process.Start("explorer.exe", "/select, \"" + path + "\"");
     }
 
-    private void OpenFolder(string folderPath)
+    bool IsAdministrator()
     {
-        if (Directory.Exists(folderPath))
+        var identity = WindowsIdentity.GetCurrent();
+        var principal = new WindowsPrincipal(identity);
+        return principal.IsInRole(WindowsBuiltInRole.Administrator);
+    }
+
+    bool StartAsAdmin(string fileName)
+    {
+        DialogResult result = MessageBox.Show("This can only be used when running as Administrator. Restart program as Administrator?", "Restart as Admin?", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button1);
+        if (result == DialogResult.No)
+            return false;
+        Process process = new Process
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo()
+            StartInfo =
             {
-                Arguments = folderPath,
-                FileName = "explorer.exe",
-            };
-            Process.Start(startInfo);
-        }
+                FileName = fileName,
+                UseShellExecute = true,
+                Verb = "runas",
+            }
+        };
+
+        process.Start();
+        Close();
+        return true;
+    }
+
+    private void AllUsersCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+        if (AllUsersCheckBox.Checked && !IsAdministrator())
+            if (!StartAsAdmin(Application.ExecutablePath))
+                AllUsersCheckBox.Checked = false;
     }
 }

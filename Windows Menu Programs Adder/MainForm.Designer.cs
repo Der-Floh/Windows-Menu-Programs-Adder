@@ -65,12 +65,13 @@
             // 
             AllUsersCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             AllUsersCheckBox.AutoSize = true;
-            AllUsersCheckBox.Location = new Point(293, 41);
+            AllUsersCheckBox.Location = new Point(315, 41);
             AllUsersCheckBox.Name = "AllUsersCheckBox";
             AllUsersCheckBox.Size = new Size(112, 19);
             AllUsersCheckBox.TabIndex = 4;
             AllUsersCheckBox.Text = "Add for all Users";
             AllUsersCheckBox.UseVisualStyleBackColor = true;
+            AllUsersCheckBox.CheckedChanged += AllUsersCheckBox_CheckedChanged;
             // 
             // ProgramsCheckedListBox
             // 
