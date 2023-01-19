@@ -259,8 +259,11 @@ public partial class MainForm : Form
                 Verb = "runas",
             }
         };
-
-        process.Start();
+        try
+        {
+            process.Start();
+        }
+        catch { return false; }
         Close();
         return true;
     }
