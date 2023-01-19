@@ -6,7 +6,7 @@ using System.Security.Principal;
 
 namespace Windows_Menu_Programs_Adder;
 
-public partial class MainForm : Form
+internal sealed partial class MainForm : Form
 {
     BindingList<WProgram> programs = new BindingList<WProgram>();
     BindingList<WProgram> checkedPrograms = new BindingList<WProgram>();
