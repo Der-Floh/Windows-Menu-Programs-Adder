@@ -35,6 +35,7 @@
             ShortcutTextBox = new TextBox();
             ShortcutLabel = new Label();
             CheckedProgramsListBox = new ListBox();
+            OpenPathButton = new Button();
             SuspendLayout();
             // 
             // MenuComboBox
@@ -43,7 +44,7 @@
             MenuComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             MenuComboBox.FormattingEnabled = true;
             MenuComboBox.Items.AddRange(new object[] { "Desktop", "Start Menu", "Taskbar" });
-            MenuComboBox.Location = new Point(293, 24);
+            MenuComboBox.Location = new Point(293, 12);
             MenuComboBox.Name = "MenuComboBox";
             MenuComboBox.Size = new Size(134, 23);
             MenuComboBox.TabIndex = 2;
@@ -52,7 +53,7 @@
             // AddButton
             // 
             AddButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            AddButton.Location = new Point(212, 23);
+            AddButton.Location = new Point(212, 11);
             AddButton.Name = "AddButton";
             AddButton.Size = new Size(75, 23);
             AddButton.TabIndex = 3;
@@ -64,7 +65,7 @@
             // 
             AllUsersCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             AllUsersCheckBox.AutoSize = true;
-            AllUsersCheckBox.Location = new Point(293, 53);
+            AllUsersCheckBox.Location = new Point(293, 41);
             AllUsersCheckBox.Name = "AllUsersCheckBox";
             AllUsersCheckBox.Size = new Size(112, 19);
             AllUsersCheckBox.TabIndex = 4;
@@ -92,6 +93,8 @@
             ShortcutTextBox.TabIndex = 6;
             ShortcutTextBox.Visible = false;
             ShortcutTextBox.TextChanged += ShortcutTextBox_TextChanged;
+            ShortcutTextBox.Enter += ShortcutTextBox_Enter;
+            ShortcutTextBox.Leave += ShortcutTextBox_Leave;
             // 
             // ShortcutLabel
             // 
@@ -115,11 +118,23 @@
             CheckedProgramsListBox.TabIndex = 8;
             CheckedProgramsListBox.SelectedIndexChanged += CheckedProgramsListBox_SelectedIndexChanged;
             // 
+            // OpenPathButton
+            // 
+            OpenPathButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OpenPathButton.Location = new Point(212, 77);
+            OpenPathButton.Name = "OpenPathButton";
+            OpenPathButton.Size = new Size(127, 23);
+            OpenPathButton.TabIndex = 9;
+            OpenPathButton.Text = "Show in Explorer";
+            OpenPathButton.UseVisualStyleBackColor = true;
+            OpenPathButton.Click += OpenPathButton_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(439, 278);
+            Controls.Add(OpenPathButton);
             Controls.Add(CheckedProgramsListBox);
             Controls.Add(ShortcutLabel);
             Controls.Add(ShortcutTextBox);
@@ -142,5 +157,6 @@
         private TextBox ShortcutTextBox;
         private Label ShortcutLabel;
         private ListBox CheckedProgramsListBox;
+        private Button OpenPathButton;
     }
 }

@@ -20,8 +20,6 @@ public partial class MainForm : Form
         CheckedProgramsListBox.DataSource = checkedPrograms;
         CheckedProgramsListBox.DisplayMember = "Name";
         CheckedProgramsListBox.ValueMember = "Path";
-        ShortcutTextBox.GotFocus += ShortcutTextBox_GotFocus;
-        ShortcutTextBox.LostFocus += ShortcutTextBox_LostFocus;
         MenuComboBox.SelectedIndex = 0;
         ShortcutTextBoxSetDefaultValue();
         FillPrograms();
@@ -48,11 +46,13 @@ public partial class MainForm : Form
         }
     }
 
-    void PinToTaskBar(WProgram wProgram)
+    void PinToTaskBar(WProgram wProgram, string name)
     {
-        string file = wProgram.File;
-        if (ProgramsCheckedListBox.CheckedItems.Count == 1)
-            file = ShortcutTextBox.Text + wProgram.Type;
+        string file;
+        if (string.IsNullOrEmpty(name))
+            file = wProgram.File;
+        else
+            file = name + wProgram.Type;
         string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Microsoft", "Internet Explorer", "Quick Launch", "User Pinned", "TaskBar", ReplaceFileType(file, "lnk"));
         CreateShortcut(wProgram.Path, shortcutPath);
 
@@ -62,11 +62,13 @@ public partial class MainForm : Form
         }
     }
 
-    void AddToDesktop(WProgram wProgram)
+    void AddToDesktop(WProgram wProgram, string name)
     {
-        string file = wProgram.File;
-        if (ProgramsCheckedListBox.CheckedItems.Count == 1)
-            file = ShortcutTextBox.Text + wProgram.Type;
+        string file;
+        if (string.IsNullOrEmpty(name))
+            file = wProgram.File;
+        else
+            file = name + wProgram.Type;
         string shortcutPath;
         if (AllUsersCheckBox.Checked)
             shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory), ReplaceFileType(file, "lnk"));
@@ -75,11 +77,13 @@ public partial class MainForm : Form
         CreateShortcut(wProgram.Path, shortcutPath);
     }
 
-    void AddToStartMenu(WProgram wProgram)
+    void AddToStartMenu(WProgram wProgram, string name)
     {
-        string file = wProgram.File;
-        if (ProgramsCheckedListBox.CheckedItems.Count == 1)
-            file = ShortcutTextBox.Text + wProgram.Type;
+        string file;
+        if (string.IsNullOrEmpty(name))
+            file = wProgram.File;
+        else
+            file = name + wProgram.Type;
         string shortcutPath;
         if (AllUsersCheckBox.Checked)
             shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), ReplaceFileType(file, "lnk"));
@@ -126,21 +130,27 @@ public partial class MainForm : Form
         switch (MenuComboBox.SelectedIndex)
         {
             case 0:
-                foreach (WProgram wProgram in ProgramsCheckedListBox.CheckedItems)
+                foreach (WProgram wProgram in checkedPrograms)
                 {
-                    AddToDesktop(wProgram);
+                    string name;
+                    customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
+                    AddToDesktop(wProgram, name);
                 }
                 break;
             case 1:
-                foreach (WProgram wProgram in ProgramsCheckedListBox.CheckedItems)
+                foreach (WProgram wProgram in checkedPrograms)
                 {
-                    AddToStartMenu(wProgram);
+                    string name;
+                    customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
+                    AddToStartMenu(wProgram, name);
                 }
                 break;
             case 2:
-                foreach (WProgram wProgram in ProgramsCheckedListBox.CheckedItems)
+                foreach (WProgram wProgram in checkedPrograms)
                 {
-                    PinToTaskBar(wProgram);
+                    string name;
+                    customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
+                    PinToTaskBar(wProgram, name);
                 }
                 RestartExplorer(); break;
         }
@@ -173,7 +183,7 @@ public partial class MainForm : Form
 
     private void CheckedProgramsListBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string name = "";
+        string name;
         customeNames.TryGetValue(CheckedProgramsListBox.SelectedIndex, out name);
         ShortcutTextBox.Text = name;
 
@@ -182,19 +192,24 @@ public partial class MainForm : Form
 
     private void ShortcutTextBox_TextChanged(object sender, EventArgs e)
     {
-        customeNames[CheckedProgramsListBox.SelectedIndex] = ShortcutTextBox.Text;
+        if (string.IsNullOrEmpty(ShortcutTextBox.Text) || ShortcutTextBox.Text == "(Default)")
+            customeNames.Remove(CheckedProgramsListBox.SelectedIndex);
+        else
+            customeNames[CheckedProgramsListBox.SelectedIndex] = ShortcutTextBox.Text;
     }
 
-    private void ShortcutTextBox_GotFocus(object? sender, EventArgs e)
+    private void ShortcutTextBox_Enter(object sender, EventArgs e)
     {
         if (ShortcutTextBox.Text == "(Default)")
         {
             ShortcutTextBox.ForeColor = Color.Black;
             ShortcutTextBox.Text = "";
         }
+        if (!string.IsNullOrEmpty(ShortcutTextBox.Text) && ShortcutTextBox.Text != "(Default)")
+            BeginInvoke(delegate { ((TextBox)sender).SelectAll(); });
     }
 
-    private void ShortcutTextBox_LostFocus(object? sender, EventArgs e)
+    private void ShortcutTextBox_Leave(object sender, EventArgs e)
     {
         ShortcutTextBoxSetDefaultValue();
     }
@@ -210,5 +225,26 @@ public partial class MainForm : Form
             ShortcutTextBox.ForeColor = Color.Gray;
         else if (ShortcutTextBox.Text != "(Default)")
             ShortcutTextBox.ForeColor = Color.Black;
+    }
+
+    private void OpenPathButton_Click(object sender, EventArgs e)
+    {
+        string path = ((WProgram)CheckedProgramsListBox.SelectedItem).Path;
+        //path = path.Substring(0, path.LastIndexOf('\\'));
+        //OpenFolder(path);
+        Process.Start("explorer.exe", "/select, \"" + path + "\"");
+    }
+
+    private void OpenFolder(string folderPath)
+    {
+        if (Directory.Exists(folderPath))
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                Arguments = folderPath,
+                FileName = "explorer.exe",
+            };
+            Process.Start(startInfo);
+        }
     }
 }
