@@ -44,9 +44,14 @@ internal sealed partial class MainForm : Form
                 string[] wProgramString = programString.Split("|");
                 WProgram wProgram = new WProgram { File = wProgramString[0], Path = wProgramString[1] };
 
-                int index = ProgramsCheckedListBox.Items.IndexOf(ProgramsCheckedListBox.Items.Cast<WProgram>().First(x => x.Path == wProgram.Path));
+                int index = -1;
+                try
+                {
+                    index = ProgramsCheckedListBox.Items.IndexOf(ProgramsCheckedListBox.Items.Cast<WProgram>().First(x => x.Path == wProgram.Path));
+                }
+                catch { }
                 if (index == -1)
-                    MessageBox.Show($"Path: '{wProgram.Path}' wasn't found", "Not Found Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Path: '{wProgram.Path}' of Program '{wProgram.File}' wasn't found", "Not Found Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     ProgramsCheckedListBox.SetItemChecked(index, true);
             }
@@ -65,10 +70,14 @@ internal sealed partial class MainForm : Form
             object? value = app.GetValue("");
             if (value == null)
                 continue;
+            string path = value.ToString().TrimStart('"').TrimEnd('"');
+            List<WProgram> found = programs.Where(x => x.Path == path).ToList();
+            if (found.Count != 0)
+                continue;
             WProgram wProgram = new WProgram()
             {
                 File = keyname,
-                Path = value.ToString(),
+                Path = path,
             };
             programs.Add(wProgram);
         }
