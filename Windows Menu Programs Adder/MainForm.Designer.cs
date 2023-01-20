@@ -122,7 +122,7 @@ sealed partial class MainForm
         // OpenPathButton
         // 
         OpenPathButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        OpenPathButton.Location = new Point(212, 77);
+        OpenPathButton.Location = new Point(212, 75);
         OpenPathButton.Name = "OpenPathButton";
         OpenPathButton.Size = new Size(127, 23);
         OpenPathButton.TabIndex = 9;

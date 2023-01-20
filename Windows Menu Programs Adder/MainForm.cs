@@ -34,12 +34,12 @@ internal sealed partial class MainForm : Form
         string[] args = Environment.GetCommandLineArgs();
         if ((IsRunInsideVS() && args.Length >= 2) || (!IsRunInsideVS() && args.Length >= 1))
         {
-            List<string> argsSplit = new List<string>();
+            List<string> argsCheckedSplit = new List<string>();
             if (IsRunInsideVS())
-                argsSplit = args[1].Split('?').ToList();
+                argsCheckedSplit = args[1].Split('?').ToList();
             else
-                argsSplit = args[0].Split('?').ToList();
-            foreach (string programString in argsSplit)
+                argsCheckedSplit = args[0].Split('?').ToList();
+            foreach (string programString in argsCheckedSplit)
             {
                 string[] wProgramString = programString.Split("|");
                 WProgram wProgram = new WProgram { File = wProgramString[0], Path = wProgramString[1] };
@@ -54,6 +54,24 @@ internal sealed partial class MainForm : Form
                     MessageBox.Show($"Path: '{wProgram.Path}' of Program '{wProgram.File}' wasn't found", "Not Found Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     ProgramsCheckedListBox.SetItemChecked(index, true);
+            }
+
+            if ((IsRunInsideVS() && args.Length >= 3) || (!IsRunInsideVS() && args.Length >= 2))
+            {
+                List<string> argsNamesSplit = new List<string>();
+                if (IsRunInsideVS())
+                    argsNamesSplit = args[2].Split('?').ToList();
+                else
+                    argsNamesSplit = args[1].Split('?').ToList();
+
+                Dictionary<int, string> dictionary = new Dictionary<int, string>();
+                foreach (var nameString in argsNamesSplit)
+                {
+                    string[] keyValue = nameString.TrimStart('[').TrimEnd(']').Split(',');
+                    dictionary.Add(int.Parse(keyValue[0]), keyValue[1].Trim());
+                }
+                customeNames = dictionary;
+                CheckedProgramsListBox_SelectedIndexChanged(this, new EventArgs());
             }
         }
     }
@@ -282,7 +300,7 @@ internal sealed partial class MainForm : Form
         DialogResult result = MessageBox.Show("This can only be used when running as Administrator. Restart program as Administrator?", "Restart as Admin?", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button1);
         if (result == DialogResult.No)
             return false;
-        string test = string.Join("?", checkedPrograms);
+        string test = string.Join("?", customeNames);
         Process process = new Process
         {
             StartInfo =
@@ -290,7 +308,7 @@ internal sealed partial class MainForm : Form
                 FileName = fileName,
                 UseShellExecute = true,
                 Verb = "runas",
-                Arguments = $"\"{string.Join("?", checkedPrograms)}\""
+                Arguments = $"\"{string.Join("?", checkedPrograms)}\" \"{string.Join("?", customeNames)}\""
             }
         };
         try
