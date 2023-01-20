@@ -45,7 +45,10 @@ internal sealed partial class MainForm : Form
                 WProgram wProgram = new WProgram { File = wProgramString[0], Path = wProgramString[1] };
 
                 int index = ProgramsCheckedListBox.Items.IndexOf(ProgramsCheckedListBox.Items.Cast<WProgram>().First(x => x.Path == wProgram.Path));
-                ProgramsCheckedListBox.SetItemChecked(index, true);
+                if (index == -1)
+                    MessageBox.Show($"Path: '{wProgram.Path}' wasn't found", "Not Found Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                else
+                    ProgramsCheckedListBox.SetItemChecked(index, true);
             }
         }
     }
