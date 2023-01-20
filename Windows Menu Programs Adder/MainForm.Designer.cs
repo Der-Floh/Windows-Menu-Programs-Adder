@@ -36,6 +36,7 @@ sealed partial class MainForm
         ShortcutLabel = new Label();
         CheckedProgramsListBox = new ListBox();
         OpenPathButton = new Button();
+        RefreshIconsButton = new Button();
         SuspendLayout();
         // 
         // MenuComboBox
@@ -44,7 +45,7 @@ sealed partial class MainForm
         MenuComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
         MenuComboBox.FormattingEnabled = true;
         MenuComboBox.Items.AddRange(new object[] { "Desktop", "Start Menu" });
-        MenuComboBox.Location = new Point(293, 12);
+        MenuComboBox.Location = new Point(324, 12);
         MenuComboBox.Name = "MenuComboBox";
         MenuComboBox.Size = new Size(134, 23);
         MenuComboBox.TabIndex = 2;
@@ -53,7 +54,7 @@ sealed partial class MainForm
         // AddButton
         // 
         AddButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        AddButton.Location = new Point(212, 11);
+        AddButton.Location = new Point(243, 11);
         AddButton.Name = "AddButton";
         AddButton.Size = new Size(75, 23);
         AddButton.TabIndex = 3;
@@ -65,7 +66,7 @@ sealed partial class MainForm
         // 
         AllUsersCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         AllUsersCheckBox.AutoSize = true;
-        AllUsersCheckBox.Location = new Point(315, 41);
+        AllUsersCheckBox.Location = new Point(346, 41);
         AllUsersCheckBox.Name = "AllUsersCheckBox";
         AllUsersCheckBox.Size = new Size(112, 19);
         AllUsersCheckBox.TabIndex = 4;
@@ -80,7 +81,7 @@ sealed partial class MainForm
         ProgramsCheckedListBox.FormattingEnabled = true;
         ProgramsCheckedListBox.Location = new Point(12, 12);
         ProgramsCheckedListBox.Name = "ProgramsCheckedListBox";
-        ProgramsCheckedListBox.Size = new Size(194, 256);
+        ProgramsCheckedListBox.Size = new Size(225, 292);
         ProgramsCheckedListBox.TabIndex = 5;
         ProgramsCheckedListBox.ItemCheck += ProgramsCheckedListBox_ItemCheck;
         ProgramsCheckedListBox.SelectedIndexChanged += ProgramsCheckedListBox_SelectedIndexChanged;
@@ -88,7 +89,7 @@ sealed partial class MainForm
         // ShortcutTextBox
         // 
         ShortcutTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        ShortcutTextBox.Location = new Point(301, 100);
+        ShortcutTextBox.Location = new Point(332, 136);
         ShortcutTextBox.Name = "ShortcutTextBox";
         ShortcutTextBox.Size = new Size(126, 23);
         ShortcutTextBox.TabIndex = 6;
@@ -101,7 +102,7 @@ sealed partial class MainForm
         // 
         ShortcutLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         ShortcutLabel.AutoSize = true;
-        ShortcutLabel.Location = new Point(212, 103);
+        ShortcutLabel.Location = new Point(243, 139);
         ShortcutLabel.Name = "ShortcutLabel";
         ShortcutLabel.Size = new Size(87, 15);
         ShortcutLabel.TabIndex = 7;
@@ -113,7 +114,7 @@ sealed partial class MainForm
         CheckedProgramsListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
         CheckedProgramsListBox.FormattingEnabled = true;
         CheckedProgramsListBox.ItemHeight = 15;
-        CheckedProgramsListBox.Location = new Point(212, 129);
+        CheckedProgramsListBox.Location = new Point(243, 165);
         CheckedProgramsListBox.Name = "CheckedProgramsListBox";
         CheckedProgramsListBox.Size = new Size(215, 139);
         CheckedProgramsListBox.TabIndex = 8;
@@ -122,7 +123,7 @@ sealed partial class MainForm
         // OpenPathButton
         // 
         OpenPathButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        OpenPathButton.Location = new Point(212, 75);
+        OpenPathButton.Location = new Point(243, 110);
         OpenPathButton.Name = "OpenPathButton";
         OpenPathButton.Size = new Size(127, 23);
         OpenPathButton.TabIndex = 9;
@@ -130,11 +131,23 @@ sealed partial class MainForm
         OpenPathButton.UseVisualStyleBackColor = true;
         OpenPathButton.Click += OpenPathButton_Click;
         // 
+        // RefreshIconsButton
+        // 
+        RefreshIconsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        RefreshIconsButton.Location = new Point(243, 82);
+        RefreshIconsButton.Name = "RefreshIconsButton";
+        RefreshIconsButton.Size = new Size(127, 23);
+        RefreshIconsButton.TabIndex = 10;
+        RefreshIconsButton.Text = "Refresh Icons";
+        RefreshIconsButton.UseVisualStyleBackColor = true;
+        RefreshIconsButton.Click += RefreshIconsButton_Click;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(439, 278);
+        ClientSize = new Size(470, 313);
+        Controls.Add(RefreshIconsButton);
         Controls.Add(OpenPathButton);
         Controls.Add(CheckedProgramsListBox);
         Controls.Add(ShortcutLabel);
@@ -146,6 +159,8 @@ sealed partial class MainForm
         MinimumSize = new Size(455, 317);
         Name = "MainForm";
         Text = "Windows Menu Programs Adder";
+        FormClosing += MainForm_FormClosing;
+        Load += MainForm_Load;
         ResumeLayout(false);
         PerformLayout();
     }
@@ -159,4 +174,5 @@ sealed partial class MainForm
     private Label ShortcutLabel;
     private ListBox CheckedProgramsListBox;
     private Button OpenPathButton;
+    private Button RefreshIconsButton;
 }

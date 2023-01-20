@@ -2,7 +2,6 @@ using IWshRuntimeLibrary;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Reflection;
 using System.Security.Principal;
 
 namespace Windows_Menu_Programs_Adder;
@@ -32,13 +31,11 @@ internal sealed partial class MainForm : Form
         FillPrograms();
 
         string[] args = Environment.GetCommandLineArgs();
-        if ((IsRunInsideVS() && args.Length >= 2) || (!IsRunInsideVS() && args.Length >= 1))
+        if (args.Length >= 2)
         {
+            //MessageBox.Show($"RunInsideVS: '{IsRunInsideVS()}' | args length: '{args.Length}' | args: '{args[0]}'");
             List<string> argsCheckedSplit = new List<string>();
-            if (IsRunInsideVS())
-                argsCheckedSplit = args[1].Split('?').ToList();
-            else
-                argsCheckedSplit = args[0].Split('?').ToList();
+            argsCheckedSplit = args[1].Split('?').ToList();
             foreach (string programString in argsCheckedSplit)
             {
                 string[] wProgramString = programString.Split("|");
@@ -56,13 +53,10 @@ internal sealed partial class MainForm : Form
                     ProgramsCheckedListBox.SetItemChecked(index, true);
             }
 
-            if ((IsRunInsideVS() && args.Length >= 3) || (!IsRunInsideVS() && args.Length >= 2))
+            if (args.Length >= 3)
             {
                 List<string> argsNamesSplit = new List<string>();
-                if (IsRunInsideVS())
-                    argsNamesSplit = args[2].Split('?').ToList();
-                else
-                    argsNamesSplit = args[1].Split('?').ToList();
+                argsNamesSplit = args[2].Split('?').ToList();
 
                 Dictionary<int, string> dictionary = new Dictionary<int, string>();
                 foreach (var nameString in argsNamesSplit)
@@ -173,7 +167,8 @@ internal sealed partial class MainForm : Form
         {
             FileName = "taskkill.exe",
             Arguments = "-f -im explorer.exe",
-            WindowStyle = ProcessWindowStyle.Hidden
+            WindowStyle = ProcessWindowStyle.Hidden,
+            CreateNoWindow = true
         };
         process.Start();
         process.WaitForExit();
@@ -228,7 +223,11 @@ internal sealed partial class MainForm : Form
         if (e.NewValue == CheckState.Checked)
             checkedPrograms.Add((WProgram)ProgramsCheckedListBox.Items[e.Index]);
         else
-            checkedPrograms.Remove((WProgram)ProgramsCheckedListBox.Items[e.Index]);
+        {
+            WProgram wProgramToDelete = (WProgram)ProgramsCheckedListBox.Items[e.Index];
+            customeNames.Remove(checkedPrograms.IndexOf(wProgramToDelete));
+            checkedPrograms.Remove(wProgramToDelete);
+        }
     }
 
     private void ProgramsCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -308,9 +307,13 @@ internal sealed partial class MainForm : Form
                 FileName = fileName,
                 UseShellExecute = true,
                 Verb = "runas",
-                Arguments = $"\"{string.Join("?", checkedPrograms)}\" \"{string.Join("?", customeNames)}\""
+                //Arguments = $"\"{string.Join("?", checkedPrograms)}\" \"{string.Join("?", customeNames)}\""
             }
         };
+        if (checkedPrograms.Count != 0 && customeNames.Count == 0)
+            process.StartInfo.Arguments = $"\"{string.Join("?", checkedPrograms)}\"";
+        else if (checkedPrograms.Count != 0 && customeNames.Count != 0)
+            process.StartInfo.Arguments = $"\"{string.Join("?", checkedPrograms)}\" \"{string.Join("?", customeNames)}\"";
         try
         {
             process.Start();
@@ -330,8 +333,45 @@ internal sealed partial class MainForm : Form
                 AllUsersCheckBox.Checked = false;
     }
 
-    bool IsRunInsideVS()
+    private void MainForm_Load(object sender, EventArgs e)
     {
-        return Environment.GetCommandLineArgs().Contains(Assembly.GetExecutingAssembly().Location);
+        if (Properties.Settings.Default.Maximised)
+        {
+            Location = Properties.Settings.Default.Location;
+            WindowState = FormWindowState.Maximized;
+            Size = Properties.Settings.Default.Size;
+        }
+        else
+        {
+
+            Size = Properties.Settings.Default.Size;
+            if (Properties.Settings.Default.Location.IsEmpty)
+                Location = new Point(Screen.FromControl(this).Bounds.Width / 2 - Size.Width / 2, Screen.FromControl(this).Bounds.Height / 2 - Size.Height / 2);
+            else
+                Location = Properties.Settings.Default.Location;
+        }
+    }
+
+    private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        if (WindowState == FormWindowState.Normal)
+        {
+            Properties.Settings.Default.Location = Location;
+            Properties.Settings.Default.Size = Size;
+            Properties.Settings.Default.Maximised = false;
+        }
+        else
+        {
+            Properties.Settings.Default.Location = RestoreBounds.Location;
+            Properties.Settings.Default.Size = RestoreBounds.Size;
+            Properties.Settings.Default.Maximised = WindowState == FormWindowState.Maximized;
+        }
+        Properties.Settings.Default.Save();
+    }
+
+    private void RefreshIconsButton_Click(object sender, EventArgs e)
+    {
+        System.IO.File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "IconCache.db"));
+        RestartExplorer();
     }
 }
