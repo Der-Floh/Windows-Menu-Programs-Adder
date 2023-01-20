@@ -200,14 +200,14 @@ internal sealed partial class MainForm : Form
                     AddToStartMenu(wProgram, name);
                 }
                 break;
-            case 2:
-                foreach (WProgram wProgram in checkedPrograms)
-                {
-                    string name;
-                    customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
-                    PinToTaskBar(wProgram, name);
-                }
-                RestartExplorer(); break;
+                /*case 2:
+                    foreach (WProgram wProgram in checkedPrograms)
+                    {
+                        string name;
+                        customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
+                        PinToTaskBar(wProgram, name);
+                    }
+                    RestartExplorer(); break;*/
         }
     }
 

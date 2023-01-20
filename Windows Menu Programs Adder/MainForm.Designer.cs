@@ -43,7 +43,7 @@ sealed partial class MainForm
         MenuComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         MenuComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
         MenuComboBox.FormattingEnabled = true;
-        MenuComboBox.Items.AddRange(new object[] { "Desktop", "Start Menu", "Taskbar" });
+        MenuComboBox.Items.AddRange(new object[] { "Desktop", "Start Menu" });
         MenuComboBox.Location = new Point(293, 12);
         MenuComboBox.Name = "MenuComboBox";
         MenuComboBox.Size = new Size(134, 23);
