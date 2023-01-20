@@ -27,4 +27,9 @@ internal sealed class WProgram
         return "";
     }
 
+    public override string ToString()
+    {
+        return $"{File}|{Path}";
+    }
+
 }

@@ -2,6 +2,7 @@ using IWshRuntimeLibrary;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Security.Principal;
 
 namespace Windows_Menu_Programs_Adder;
@@ -15,6 +16,7 @@ internal sealed partial class MainForm : Form
     public MainForm()
     {
         InitializeComponent();
+
         ((ListBox)ProgramsCheckedListBox).DataSource = programs;
         ((ListBox)ProgramsCheckedListBox).DisplayMember = "Name";
         ((ListBox)ProgramsCheckedListBox).ValueMember = "Path";
@@ -28,6 +30,24 @@ internal sealed partial class MainForm : Form
             AllUsersCheckBox.Checked = true;
         ShortcutTextBoxSetDefaultValue();
         FillPrograms();
+
+        string[] args = Environment.GetCommandLineArgs();
+        if ((IsRunInsideVS() && args.Length >= 2) || (!IsRunInsideVS() && args.Length >= 1))
+        {
+            List<string> argsSplit = new List<string>();
+            if (IsRunInsideVS())
+                argsSplit = args[1].Split('?').ToList();
+            else
+                argsSplit = args[0].Split('?').ToList();
+            foreach (string programString in argsSplit)
+            {
+                string[] wProgramString = programString.Split("|");
+                WProgram wProgram = new WProgram { File = wProgramString[0], Path = wProgramString[1] };
+
+                int index = ProgramsCheckedListBox.Items.IndexOf(ProgramsCheckedListBox.Items.Cast<WProgram>().First(x => x.Path == wProgram.Path));
+                ProgramsCheckedListBox.SetItemChecked(index, true);
+            }
+        }
     }
 
     void FillPrograms()
@@ -250,6 +270,7 @@ internal sealed partial class MainForm : Form
         DialogResult result = MessageBox.Show("This can only be used when running as Administrator. Restart program as Administrator?", "Restart as Admin?", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button1);
         if (result == DialogResult.No)
             return false;
+        string test = string.Join("?", checkedPrograms);
         Process process = new Process
         {
             StartInfo =
@@ -257,13 +278,17 @@ internal sealed partial class MainForm : Form
                 FileName = fileName,
                 UseShellExecute = true,
                 Verb = "runas",
+                Arguments = $"\"{string.Join("?", checkedPrograms)}\""
             }
         };
         try
         {
             process.Start();
         }
-        catch { return false; }
+        catch
+        {
+            return false;
+        }
         Close();
         return true;
     }
@@ -273,5 +298,10 @@ internal sealed partial class MainForm : Form
         if (AllUsersCheckBox.Checked && !IsAdministrator())
             if (!StartAsAdmin(Application.ExecutablePath))
                 AllUsersCheckBox.Checked = false;
+    }
+
+    bool IsRunInsideVS()
+    {
+        return Environment.GetCommandLineArgs().Contains(Assembly.GetExecutingAssembly().Location);
     }
 }
