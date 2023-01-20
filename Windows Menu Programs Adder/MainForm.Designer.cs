@@ -54,6 +54,7 @@ sealed partial class MainForm
         // AddButton
         // 
         AddButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        AddButton.Cursor = Cursors.Hand;
         AddButton.Location = new Point(243, 11);
         AddButton.Name = "AddButton";
         AddButton.Size = new Size(75, 23);
@@ -89,6 +90,7 @@ sealed partial class MainForm
         // ShortcutTextBox
         // 
         ShortcutTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        ShortcutTextBox.Cursor = Cursors.IBeam;
         ShortcutTextBox.Location = new Point(332, 136);
         ShortcutTextBox.Name = "ShortcutTextBox";
         ShortcutTextBox.Size = new Size(126, 23);
@@ -123,6 +125,7 @@ sealed partial class MainForm
         // OpenPathButton
         // 
         OpenPathButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        OpenPathButton.Cursor = Cursors.Hand;
         OpenPathButton.Location = new Point(243, 110);
         OpenPathButton.Name = "OpenPathButton";
         OpenPathButton.Size = new Size(127, 23);
@@ -134,6 +137,7 @@ sealed partial class MainForm
         // RefreshIconsButton
         // 
         RefreshIconsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        RefreshIconsButton.Cursor = Cursors.Hand;
         RefreshIconsButton.Location = new Point(243, 82);
         RefreshIconsButton.Name = "RefreshIconsButton";
         RefreshIconsButton.Size = new Size(127, 23);
