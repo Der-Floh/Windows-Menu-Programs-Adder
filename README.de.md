@@ -25,4 +25,4 @@ Markiere die Programme, die entweder auf Desktop oder im Startmenü hinzugefügt
 ## Aktuell nicht geplant
 - Verknüpfungen der Taskleiste hinzufügen -> zu kompliziert
 
-[!["Buy me a Floppy Disk"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/der.floh)
+[!["Buy me a Floppy Disk"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/der_floh)

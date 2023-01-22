@@ -26,4 +26,4 @@ Check the Programs you want to add to either your Desktop or your Start Menu and
 ## Currently Not Planned
 - Adding Shortcuts to the Taskbar -> too complicated
 
-[!["Buy me a Floppy Disk"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/der.floh)
+[!["Buy me a Floppy Disk"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/der_floh)
