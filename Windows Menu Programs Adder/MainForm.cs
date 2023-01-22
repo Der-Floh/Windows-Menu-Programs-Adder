@@ -11,6 +11,7 @@ internal sealed partial class MainForm : Form
     BindingList<WProgram> programs = new BindingList<WProgram>();
     BindingList<WProgram> checkedPrograms = new BindingList<WProgram>();
     Dictionary<int, string> customeNames = new Dictionary<int, string>();
+    string chosenFolderPath;
 
     public MainForm()
     {
@@ -141,6 +142,31 @@ internal sealed partial class MainForm : Form
         CreateShortcut(wProgram.Path, shortcutPath);
     }
 
+    void AddToStartUp(WProgram wProgram, string name)
+    {
+        string file;
+        if (string.IsNullOrEmpty(name))
+            file = wProgram.File;
+        else
+            file = name + wProgram.Type;
+        string shortcutPath;
+        if (AllUsersCheckBox.Checked)
+            shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup), ReplaceFileType(file, "lnk"));
+        else
+            shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), ReplaceFileType(file, "lnk"));
+        CreateShortcut(wProgram.Path, shortcutPath);
+    }
+
+    void AddToCustom(WProgram wProgram, string name, string shortcutPath)
+    {
+        string file;
+        if (string.IsNullOrEmpty(name))
+            file = wProgram.File;
+        else
+            file = name + wProgram.Type;
+        CreateShortcut(wProgram.Path, shortcutPath);
+    }
+
     string ReplaceFileType(string path, string newFileType)
     {
         int index = path.LastIndexOf('.');
@@ -195,14 +221,28 @@ internal sealed partial class MainForm : Form
                     AddToStartMenu(wProgram, name);
                 }
                 break;
-                /*case 2:
-                    foreach (WProgram wProgram in checkedPrograms)
-                    {
-                        string name;
-                        customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
-                        PinToTaskBar(wProgram, name);
-                    }
-                    RestartExplorer(); break;*/
+            case 2:
+                foreach (WProgram wProgram in checkedPrograms)
+                {
+                    string name;
+                    customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
+                    AddToStartUp(wProgram, name);
+                }
+                break;
+            case 3:
+                foreach (WProgram wProgram in checkedPrograms)
+                {
+                    string name;
+                    customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
+                    string file;
+                    if (string.IsNullOrEmpty(name))
+                        file = wProgram.File;
+                    else
+                        file = name + wProgram.Type;
+                    string shortcutPath = Path.Combine(chosenFolderPath, ReplaceFileType(file, "lnk"));
+                    CreateShortcut(wProgram.Path, shortcutPath);
+                }
+                break;
         }
     }
 
@@ -210,8 +250,8 @@ internal sealed partial class MainForm : Form
     {
         switch (MenuComboBox.SelectedIndex)
         {
-            default: AllUsersCheckBox.Visible = true; break;
-            case 2: AllUsersCheckBox.Visible = false; break;
+            default: AllUsersCheckBox.Visible = true; ChooseFolderButton.Visible = false; break;
+            case 3: AllUsersCheckBox.Visible = false; ChooseFolderButton.Visible = true; break;
         }
     }
 
@@ -307,7 +347,6 @@ internal sealed partial class MainForm : Form
                 FileName = fileName,
                 UseShellExecute = true,
                 Verb = "runas",
-                //Arguments = $"\"{string.Join("?", checkedPrograms)}\" \"{string.Join("?", customeNames)}\""
             }
         };
         if (checkedPrograms.Count != 0 && customeNames.Count == 0)
@@ -373,5 +412,17 @@ internal sealed partial class MainForm : Form
     {
         System.IO.File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "IconCache.db"));
         RestartExplorer();
+    }
+
+    private void ChooseFolderButton_Click(object sender, EventArgs e)
+    {
+        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        {
+            if (!string.IsNullOrEmpty(chosenFolderPath))
+                folderBrowserDialog.InitialDirectory = chosenFolderPath;
+            DialogResult result = folderBrowserDialog.ShowDialog();
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+                chosenFolderPath = folderBrowserDialog.SelectedPath;
+        }
     }
 }

@@ -37,6 +37,7 @@ sealed partial class MainForm
         CheckedProgramsListBox = new ListBox();
         OpenPathButton = new Button();
         RefreshIconsButton = new Button();
+        ChooseFolderButton = new Button();
         SuspendLayout();
         // 
         // MenuComboBox
@@ -44,7 +45,7 @@ sealed partial class MainForm
         MenuComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         MenuComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
         MenuComboBox.FormattingEnabled = true;
-        MenuComboBox.Items.AddRange(new object[] { "Desktop", "Start Menu" });
+        MenuComboBox.Items.AddRange(new object[] { "Desktop", "Start Menu", "Startup", "Chosen Folder" });
         MenuComboBox.Location = new Point(324, 12);
         MenuComboBox.Name = "MenuComboBox";
         MenuComboBox.Size = new Size(134, 23);
@@ -91,7 +92,7 @@ sealed partial class MainForm
         // 
         ShortcutTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         ShortcutTextBox.Cursor = Cursors.IBeam;
-        ShortcutTextBox.Location = new Point(332, 136);
+        ShortcutTextBox.Location = new Point(332, 123);
         ShortcutTextBox.Name = "ShortcutTextBox";
         ShortcutTextBox.Size = new Size(126, 23);
         ShortcutTextBox.TabIndex = 6;
@@ -104,7 +105,7 @@ sealed partial class MainForm
         // 
         ShortcutLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         ShortcutLabel.AutoSize = true;
-        ShortcutLabel.Location = new Point(243, 139);
+        ShortcutLabel.Location = new Point(243, 126);
         ShortcutLabel.Name = "ShortcutLabel";
         ShortcutLabel.Size = new Size(87, 15);
         ShortcutLabel.TabIndex = 7;
@@ -116,9 +117,9 @@ sealed partial class MainForm
         CheckedProgramsListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
         CheckedProgramsListBox.FormattingEnabled = true;
         CheckedProgramsListBox.ItemHeight = 15;
-        CheckedProgramsListBox.Location = new Point(243, 165);
+        CheckedProgramsListBox.Location = new Point(243, 150);
         CheckedProgramsListBox.Name = "CheckedProgramsListBox";
-        CheckedProgramsListBox.Size = new Size(215, 139);
+        CheckedProgramsListBox.Size = new Size(215, 154);
         CheckedProgramsListBox.TabIndex = 8;
         CheckedProgramsListBox.SelectedIndexChanged += CheckedProgramsListBox_SelectedIndexChanged;
         // 
@@ -126,7 +127,7 @@ sealed partial class MainForm
         // 
         OpenPathButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         OpenPathButton.Cursor = Cursors.Hand;
-        OpenPathButton.Location = new Point(243, 110);
+        OpenPathButton.Location = new Point(243, 93);
         OpenPathButton.Name = "OpenPathButton";
         OpenPathButton.Size = new Size(127, 23);
         OpenPathButton.TabIndex = 9;
@@ -138,19 +139,33 @@ sealed partial class MainForm
         // 
         RefreshIconsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         RefreshIconsButton.Cursor = Cursors.Hand;
-        RefreshIconsButton.Location = new Point(243, 82);
+        RefreshIconsButton.Location = new Point(243, 65);
         RefreshIconsButton.Name = "RefreshIconsButton";
-        RefreshIconsButton.Size = new Size(127, 23);
+        RefreshIconsButton.Size = new Size(103, 23);
         RefreshIconsButton.TabIndex = 10;
         RefreshIconsButton.Text = "Refresh Icons";
         RefreshIconsButton.UseVisualStyleBackColor = true;
         RefreshIconsButton.Click += RefreshIconsButton_Click;
+        // 
+        // ChooseFolderButton
+        // 
+        ChooseFolderButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        ChooseFolderButton.Cursor = Cursors.Hand;
+        ChooseFolderButton.Location = new Point(352, 65);
+        ChooseFolderButton.Name = "ChooseFolderButton";
+        ChooseFolderButton.Size = new Size(106, 23);
+        ChooseFolderButton.TabIndex = 11;
+        ChooseFolderButton.Text = "Choose Folder";
+        ChooseFolderButton.UseVisualStyleBackColor = true;
+        ChooseFolderButton.Visible = false;
+        ChooseFolderButton.Click += ChooseFolderButton_Click;
         // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(470, 313);
+        Controls.Add(ChooseFolderButton);
         Controls.Add(RefreshIconsButton);
         Controls.Add(OpenPathButton);
         Controls.Add(CheckedProgramsListBox);
@@ -179,4 +194,5 @@ sealed partial class MainForm
     private ListBox CheckedProgramsListBox;
     private Button OpenPathButton;
     private Button RefreshIconsButton;
+    private Button ChooseFolderButton;
 }
