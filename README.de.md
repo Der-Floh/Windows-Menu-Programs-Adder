@@ -10,11 +10,12 @@ Markiere die Programme, die entweder auf Desktop oder im Startmenü hinzugefügt
 
 ## Aktuelle Funktionen
 - Alle installierten Programme anzeigen
-- Verknüpfungen zum Desktop oder Startmenü hinzufügen
+- Verknüpfungen zum Desktop, Startmenü oder Autostart hinzufügen
 - Benennen der Shortcuts
 - Ordner für ein bestimmtes Programm öffnen
 - Anwendung als Admin neu starten, um Verknüpfungen für alle Benutzer hinzuzufügen
 - Aktualisieren des Icon-Caches
+- Eigenen Speicherort für Links wählen
 
 &nbsp;
 
