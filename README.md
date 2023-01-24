@@ -16,6 +16,7 @@ Check the Programs you want to add to either your Desktop or your Start Menu and
 - Open folder for specific Program
 - Restart Application as Admin to add Shortcuts for All Users
 - Refresh the Icon Cache
+- Choose your own Folder Location
 
 &nbsp;
 
