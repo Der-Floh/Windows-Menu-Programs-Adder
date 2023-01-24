@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Principal;
+using static System.Windows.Forms.AxHost;
 
 namespace Windows_Menu_Programs_Adder;
 
@@ -11,7 +12,7 @@ internal sealed partial class MainForm : Form
     BindingList<WProgram> programs = new BindingList<WProgram>();
     BindingList<WProgram> checkedPrograms = new BindingList<WProgram>();
     Dictionary<int, string> customeNames = new Dictionary<int, string>();
-    string chosenFolderPath;
+    public string ChosenFolderPath { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
     public MainForm()
     {
@@ -24,6 +25,7 @@ internal sealed partial class MainForm : Form
         CheckedProgramsListBox.DisplayMember = "Name";
         CheckedProgramsListBox.ValueMember = "Path";
         MenuComboBox.SelectedIndex = 0;
+        ChosenPathTextBox.Text = ChosenFolderPath;
         if (!IsAdministrator())
             AllUsersCheckBox.Text += " (requires Admin)";
         else
@@ -239,19 +241,21 @@ internal sealed partial class MainForm : Form
                         file = wProgram.File;
                     else
                         file = name + wProgram.Type;
-                    string shortcutPath = Path.Combine(chosenFolderPath, ReplaceFileType(file, "lnk"));
+                    string shortcutPath = Path.Combine(ChosenFolderPath, ReplaceFileType(file, "lnk"));
                     CreateShortcut(wProgram.Path, shortcutPath);
                 }
                 break;
         }
+        foreach (int itemIndex in ProgramsCheckedListBox.CheckedIndices)
+            ProgramsCheckedListBox.SetItemChecked(itemIndex, false);
     }
 
     private void MenuComboBox_SelectedIndexChanged(object sender, EventArgs e)
     {
         switch (MenuComboBox.SelectedIndex)
         {
-            default: AllUsersCheckBox.Visible = true; ChooseFolderButton.Visible = false; break;
-            case 3: AllUsersCheckBox.Visible = false; ChooseFolderButton.Visible = true; break;
+            default: AllUsersCheckBox.Visible = true; ChooseFolderButton.Visible = false; ChosenPathTextBox.Visible = false; break;
+            case 3: AllUsersCheckBox.Visible = false; ChooseFolderButton.Visible = true; ChosenPathTextBox.Visible = true; break;
         }
     }
 
@@ -418,11 +422,19 @@ internal sealed partial class MainForm : Form
     {
         using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
         {
-            if (!string.IsNullOrEmpty(chosenFolderPath))
-                folderBrowserDialog.InitialDirectory = chosenFolderPath;
+            if (!string.IsNullOrEmpty(ChosenFolderPath))
+                folderBrowserDialog.InitialDirectory = ChosenFolderPath;
             DialogResult result = folderBrowserDialog.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
-                chosenFolderPath = folderBrowserDialog.SelectedPath;
+            {
+                ChosenFolderPath = folderBrowserDialog.SelectedPath;
+                ChosenPathTextBox.Text = ChosenFolderPath;
+            }
         }
+    }
+
+    private void ChosenPathTextBox_Enter(object sender, EventArgs e)
+    {
+        BeginInvoke(delegate { ((TextBox)sender).SelectAll(); });
     }
 }
