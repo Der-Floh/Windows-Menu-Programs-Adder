@@ -11,7 +11,7 @@ Check the Programs you want to add to either your Desktop or your Start Menu and
 
 ## Current Features
 - View all installed Programs
-- Add Shortcuts to your Desktop or Startmenu
+- Add Shortcuts to your Desktop, Startmenu or Startup
 - Name the Shortcuts
 - Open folder for specific Program
 - Restart Application as Admin to add Shortcuts for All Users
