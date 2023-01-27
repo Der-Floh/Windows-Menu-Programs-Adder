@@ -60,6 +60,7 @@ internal sealed class WProgram
 
             if (!string.IsNullOrEmpty(installLocation) && path.Contains(installLocation))
             {
+                return installLocation;
                 string? displayName = uapp.GetValue("DisplayName")?.ToString()?.TrimStart('"')?.TrimEnd('"');
                 if (!string.IsNullOrEmpty(displayName))
                     return displayName;
