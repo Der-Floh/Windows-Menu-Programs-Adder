@@ -3,7 +3,6 @@ using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Principal;
-using static System.Windows.Forms.AxHost;
 
 namespace Windows_Menu_Programs_Adder;
 
@@ -19,7 +18,7 @@ internal sealed partial class MainForm : Form
         InitializeComponent();
 
         ((ListBox)ProgramsCheckedListBox).DataSource = programs;
-        ((ListBox)ProgramsCheckedListBox).DisplayMember = "Name";
+        ((ListBox)ProgramsCheckedListBox).DisplayMember = "SpecialName";
         ((ListBox)ProgramsCheckedListBox).ValueMember = "Path";
         CheckedProgramsListBox.DataSource = checkedPrograms;
         CheckedProgramsListBox.DisplayMember = "Name";
@@ -36,7 +35,6 @@ internal sealed partial class MainForm : Form
         string[] args = Environment.GetCommandLineArgs();
         if (args.Length >= 2)
         {
-            //MessageBox.Show($"RunInsideVS: '{IsRunInsideVS()}' | args length: '{args.Length}' | args: '{args[0]}'");
             List<string> argsCheckedSplit = new List<string>();
             argsCheckedSplit = args[1].Split('?').ToList();
             foreach (string programString in argsCheckedSplit)
@@ -76,18 +74,20 @@ internal sealed partial class MainForm : Form
     void FillPrograms()
     {
         programs.Clear();
-        RegistryKey apps = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths", false);
+        RegistryKey? apps = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths");
+        if (apps == null)
+            return;
         foreach (string keyname in apps.GetSubKeyNames())
         {
-            RegistryKey app = apps.OpenSubKey(keyname);
+            RegistryKey? app = apps.OpenSubKey(keyname);
             if (app == null)
                 continue;
-            object? value = app.GetValue("");
+            object? value = app.GetValue(string.Empty);
             if (value == null)
                 continue;
-            string path = value.ToString().TrimStart('"').TrimEnd('"');
+            string? path = value.ToString()?.TrimStart('"')?.TrimEnd('"');
             List<WProgram> found = programs.Where(x => x.Path == path).ToList();
-            if (found.Count != 0)
+            if (found.Count != 0 || string.IsNullOrEmpty(path))
                 continue;
             WProgram wProgram = new WProgram()
             {
@@ -108,13 +108,14 @@ internal sealed partial class MainForm : Form
         string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Microsoft", "Internet Explorer", "Quick Launch", "User Pinned", "TaskBar", ReplaceFileType(file, "lnk"));
         CreateShortcut(wProgram.Path, shortcutPath);
 
-        using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband", true))
+        using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband", true))
         {
-            key.SetValue(wProgram.Name, shortcutPath);
+            if (key != null)
+                key.SetValue(wProgram.Name, shortcutPath);
         }
     }
 
-    void AddToDesktop(WProgram wProgram, string name)
+    void AddToDesktop(WProgram wProgram, string? name)
     {
         string file;
         if (string.IsNullOrEmpty(name))
@@ -129,7 +130,7 @@ internal sealed partial class MainForm : Form
         CreateShortcut(wProgram.Path, shortcutPath);
     }
 
-    void AddToStartMenu(WProgram wProgram, string name)
+    void AddToStartMenu(WProgram wProgram, string? name)
     {
         string file;
         if (string.IsNullOrEmpty(name))
@@ -144,7 +145,7 @@ internal sealed partial class MainForm : Form
         CreateShortcut(wProgram.Path, shortcutPath);
     }
 
-    void AddToStartUp(WProgram wProgram, string name)
+    void AddToStartUp(WProgram wProgram, string? name)
     {
         string file;
         if (string.IsNullOrEmpty(name))
@@ -159,7 +160,7 @@ internal sealed partial class MainForm : Form
         CreateShortcut(wProgram.Path, shortcutPath);
     }
 
-    void AddToCustom(WProgram wProgram, string name, string shortcutPath)
+    void AddToCustom(WProgram wProgram, string? name, string shortcutPath)
     {
         string file;
         if (string.IsNullOrEmpty(name))
@@ -210,7 +211,7 @@ internal sealed partial class MainForm : Form
             case 0:
                 foreach (WProgram wProgram in checkedPrograms)
                 {
-                    string name;
+                    string? name;
                     customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
                     AddToDesktop(wProgram, name);
                 }
@@ -218,7 +219,7 @@ internal sealed partial class MainForm : Form
             case 1:
                 foreach (WProgram wProgram in checkedPrograms)
                 {
-                    string name;
+                    string? name;
                     customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
                     AddToStartMenu(wProgram, name);
                 }
@@ -226,7 +227,7 @@ internal sealed partial class MainForm : Form
             case 2:
                 foreach (WProgram wProgram in checkedPrograms)
                 {
-                    string name;
+                    string? name;
                     customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
                     AddToStartUp(wProgram, name);
                 }
@@ -234,7 +235,7 @@ internal sealed partial class MainForm : Form
             case 3:
                 foreach (WProgram wProgram in checkedPrograms)
                 {
-                    string name;
+                    string? name;
                     customeNames.TryGetValue(checkedPrograms.IndexOf(wProgram), out name);
                     string file;
                     if (string.IsNullOrEmpty(name))
@@ -281,7 +282,7 @@ internal sealed partial class MainForm : Form
 
     private void CheckedProgramsListBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string name;
+        string? name;
         customeNames.TryGetValue(CheckedProgramsListBox.SelectedIndex, out name);
         ShortcutTextBox.Text = name;
 
@@ -301,7 +302,7 @@ internal sealed partial class MainForm : Form
         if (ShortcutTextBox.Text == "(Default)")
         {
             ShortcutTextBox.ForeColor = Color.Black;
-            ShortcutTextBox.Text = "";
+            ShortcutTextBox.Text = string.Empty;
         }
         if (!string.IsNullOrEmpty(ShortcutTextBox.Text) && ShortcutTextBox.Text != "(Default)")
             BeginInvoke(delegate { ((TextBox)sender).SelectAll(); });
@@ -327,8 +328,11 @@ internal sealed partial class MainForm : Form
 
     private void OpenPathButton_Click(object sender, EventArgs e)
     {
-        string path = ((WProgram)CheckedProgramsListBox.SelectedItem).Path;
-        Process.Start("explorer.exe", "/select, \"" + path + "\"");
+        if (CheckedProgramsListBox.SelectedItem != null)
+        {
+            string path = ((WProgram)CheckedProgramsListBox.SelectedItem).Path;
+            Process.Start("explorer.exe", "/select, \"" + path + "\"");
+        }
     }
 
     bool IsAdministrator()
